@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare | Mental Health Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --secondary: #4d44db;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --bg-gradient: linear-gradient(135deg, #6c63ff 0%, #4d44db 100%);
+            --shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 30px 0;
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+
+        .nav-item.active a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: var(--dark);
+            font-size: 15px;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: none;
+            border-radius: 30px;
+            background-color: white;
+            box-shadow: var(--shadow);
+            font-size: 14px;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-menu .notification {
+            position: relative;
+            margin-right: 25px;
+            cursor: pointer;
+        }
+
+        .user-menu .notification i {
+            font-size: 20px;
+            color: var(--dark);
+        }
+
+        .user-menu .notification .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .user-profile .name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Dashboard Widgets */
+        .widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .widget-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .widget-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .widget-desc {
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* Mood Tracker */
+        .mood-tracker {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .section-actions button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .mood-options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .mood-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .mood-option:hover {
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+
+        .mood-emoji {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .mood-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Activity Cards */
+        .activity-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .activity-card {
+            background: #f9f9ff;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .activity-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .activity-icon i {
+            color: var(--primary);
+        }
+
+        .activity-title {
+            font-weight: 600;
+        }
+
+        .activity-desc {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Content Panels */
+        .content-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            transition: all 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .content-panel.active {
+            right: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .panel-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #999;
+        }
+
+        .panel-content {
+            padding: 10px 0;
+        }
+
+        /* Journal Entry */
+        .journal-entry {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9ff;
+            border-radius: 8px;
+        }
+
+        .journal-date {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        .journal-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Progress Chart */
+        .progress-chart {
+            width: 100%;
+            height: 200px;
+            background: #f9f9ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Community Post */
+        .community-post {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9ff;
+            border-radius: 8px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .post-user {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: #777;
+            margin-left: 10px;
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .post-actions {
+            display: flex;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .post-action {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .post-action:hover {
+            color: var(--primary);
+        }
+
+        /* Resource Card */
+        .resource-card {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(108, 99, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .resource-icon i {
+            color: var(--primary);
+        }
+
+        .resource-info {
+            flex: 1;
+        }
+
+        .resource-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .resource-type {
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* AI Chatbot */
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(108, 99, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+        }
+
+        .chatbot-window.active {
+            display: flex;
+        }
+
+        .chatbot-header {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-title {
+            font-weight: 600;
+        }
+
+        .chatbot-close {
+            cursor: pointer;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9ff;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .bot-message {
+            background: white;
+            border-top-left-radius: 5px;
+            align-self: flex-start;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .user-message {
+            background: var(--primary);
+            color: white;
+            border-top-right-radius: 5px;
+            align-self: flex-end;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .chatbot-input button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-input button:hover {
+            background: var(--secondary);
+        }
+
+        /* Settings Panel */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-group-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .setting-label {
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            font-size: 22px;
+            color: #999;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+
+        .btn-secondary {
+            background: #eee;
+            color: var(--dark);
+            margin-right: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #ddd;
+        }
+
+        /* Emergency Button */
+        .emergency-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .emergency-btn:hover {
+            background: #c82333;
+            transform: translateY(-3px);
+        }
+
+        .emergency-btn i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard {
+                grid-template-columns: 80px 1fr;
+            }
+            .logo h1, .nav-item span {
+                display: none;
+            }
+            .logo {
+                justify-content: center;
+                padding: 0 0 30px;
+            }
+            .nav-item {
+                display: flex;
+                justify-content: center;
+            }
+            .nav-item i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            .content-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 200px;
+            }
+            .widgets {
+                grid-template-columns: 1fr 1fr;
+            }
+            .activity-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .widgets {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .search-bar {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            .user-menu {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-brain"></i>
+            <h1>MindCare</h1>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <a href="#" data-panel="dashboardPanel">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-panel="progressPanel">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-panel="activitiesPanel">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Activities</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-panel="journalPanel">
+                    <i class="fas fa-book"></i>
+                    <span>Journal</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-panel="resourcesPanel">
+                    <i class="fas fa-book-open"></i>
+                    <span>Resources</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-panel="communityPanel">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Community</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-panel="settingsPanel">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search for resources, tools...">
+            </div>
+            <div class="user-menu">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+                <div class="user-profile" id="settingsToggle">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+                    <div class="name">Sarah Johnson</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Widgets -->
+        <div class="widgets">
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">Current Streak</div>
+                    <i class="fas fa-fire" style="color: #ff6b6b;"></i>
+                </div>
+                <div class="widget-value">12</div>
+                <div class="widget-desc">days of consistent mental care</div>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">Mood Average</div>
+                    <i class="fas fa-smile" style="color: #feca57;"></i>
+                </div>
+                <div class="widget-value">7.2</div>
+                <div class="widget-desc">/10 this week</div>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">Meditation</div>
+                    <i class="fas fa-spa" style="color: #1dd1a1;"></i>
+                </div>
+                <div class="widget-value">85%</div>
+                <div class="widget-desc">weekly goal completed</div>
+            </div>
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">AI Sessions</div>
+                    <i class="fas fa-robot" style="color: #5f27cd;"></i>
+                </div>
+                <div class="widget-value">5</div>
+                <div class="widget-desc">this month</div>
+            </div>
+        </div>
+
+        <!-- Mood Tracker -->
+        <div class="mood-tracker">
+            <div class="section-header">
+                <div class="section-title">How are you feeling today?</div>
+                <div class="section-actions">
+                    <button id="viewMoodHistory">
+                        <i class="fas fa-history"></i> History
+                    </button>
+                </div>
+            </div>
+            <div class="mood-options">
+                <div class="mood-option" data-mood="awful">
+                    <div class="mood-emoji">😭</div>
+                    <div class="mood-name">Awful</div>
+                </div>
+                <div class="mood-option" data-mood="bad">
+                    <div class="mood-emoji">😞</div>
+                    <div class="mood-name">Bad</div>
+                </div>
+                <div class="mood-option" data-mood="okay">
+                    <div class="mood-emoji">😐</div>
+                    <div class="mood-name">Okay</div>
+                </div>
+                <div class="mood-option" data-mood="good">
+                    <div class="mood-emoji">😊</div>
+                    <div class="mood-name">Good</div>
+                </div>
+                <div class="mood-option" data-mood="great">
+                    <div class="mood-emoji">😁</div>
+                    <div class="mood-name">Great</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommended Activities -->
+        <div class="mood-tracker">
+            <div class="section-header">
+                <div class="section-title">Recommended Activities</div>
+                <div class="section-actions">
+                    <button id="viewAllActivities">
+                        See All
+                    </button>
+                </div>
+            </div>
+            <div class="activity-cards">
+                <div class="activity-card" data-activity="breathing">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="activity-title">Breathing Exercise</div>
+                    </div>
+                    <div class="activity-desc">5 min guided session to reduce stress</div>
+                </div>
+                <div class="activity-card" data-activity="mindfulness">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <div class="activity-title">Mindfulness</div>
+                    </div>
+                    <div class="activity-desc">10 min meditation for focus</div>
+                </div>
+                <div class="activity-card" data-activity="journal">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="activity-title">Journal Prompt</div>
+                    </div>
+                    <div class="activity-desc">Reflect on your daily achievements</div>
+                </div>
+                <div class="activity-card" data-activity="gratitude">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="activity-title">Gratitude List</div>
+                    </div>
+                    <div class="activity-desc">List 3 things you're grateful for</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Panel -->
+    <div class="content-panel" id="dashboardPanel">
+        <div class="panel-header">
+            <div class="panel-title">Dashboard Overview</div>
+            <div class="panel-close" data-panel="dashboardPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p>Your comprehensive mental health dashboard with all key metrics and quick access to features.</p>
+            <div class="progress-chart">
+                [Mood Trend Chart Would Appear Here]
+            </div>
+            <div class="section-title">Recent Activity</div>
+            <div class="journal-entry">
+                <div class="journal-date">Today, 10:30 AM</div>
+                <div class="journal-text">Completed a 10-minute mindfulness meditation session. Feeling more centered and focused.</div>
+            </div>
+            <div class="journal-entry">
+                <div class="journal-date">Yesterday, 8:15 PM</div>
+                <div class="journal-text">Wrote in my gratitude journal before bed. Noticed I'm sleeping better when I do this.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Panel -->
+    <div class="content-panel" id="progressPanel">
+        <div class="panel-header">
+            <div class="panel-title">Your Progress</div>
+            <div class="panel-close" data-panel="progressPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p>Track your mental health journey over time with detailed analytics.</p>
+            <div class="progress-chart">
+                [Progress Chart Would Appear Here]
+            </div>
+            <div class="section-title">Key Metrics</div>
+            <div class="widgets" style="grid-template-columns: 1fr 1fr;">
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-title">Mood Improvement</div>
+                        <i class="fas fa-smile-beam" style="color: #feca57;"></i>
+                    </div>
+                    <div class="widget-value">+18%</div>
+                    <div class="widget-desc">vs last month</div>
+                </div>
+                <div class="widget">
+                    <div class="widget-header">
+                        <div class="widget-title">Consistency</div>
+                        <i class="fas fa-calendar-check" style="color: #1dd1a1;"></i>
+                    </div>
+                    <div class="widget-value">82%</div>
+                    <div class="widget-desc">daily goal completion</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activities Panel -->
+    <div class="content-panel" id="activitiesPanel">
+        <div class="panel-header">
+            <div class="panel-title">Activities</div>
+            <div class="panel-close" data-panel="activitiesPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p>Browse and start activities to support your mental wellbeing.</p>
+            <div class="activity-cards" style="grid-template-columns: 1fr;">
+                <div class="activity-card">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="activity-title">Deep Breathing Exercise</div>
+                    </div>
+                    <div class="activity-desc">5-minute guided breathing to reduce stress and anxiety</div>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <div class="activity-title">Mindfulness Meditation</div>
+                    </div>
+                    <div class="activity-desc">10-minute session to improve focus and presence</div>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-pen"></i>
+                        </div>
+                        <div class="activity-title">Daily Journaling</div>
+                    </div>
+                    <div class="activity-desc">Structured prompts for self-reflection</div>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-card-header">
+                        <div class="activity-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="activity-title">Gratitude Practice</div>
+                    </div>
+                    <div class="activity-desc">List things you're thankful for to boost positivity</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journal Panel -->
+    <div class="content-panel" id="journalPanel">
+        <div class="panel-header">
+            <div class="panel-title">Journal</div>
+            <div class="panel-close" data-panel="journalPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <button class="btn btn-primary" id="newJournalEntry" style="margin-bottom: 20px;">
+                <i class="fas fa-plus"></i> New Entry
+            </button>
+            <div class="journal-entry">
+                <div class="journal-date">Today, 10:30 AM</div>
+                <div class="journal-text">I felt anxious this morning about my presentation, but after doing the breathing exercises, I felt much calmer. I reminded myself that I'm prepared and capable.</div>
+            </div>
+            <div class="journal-entry">
+                <div class="journal-date">Yesterday, 8:15 PM</div>
+                <div class="journal-text">Three things I'm grateful for today: 1) My friend checking in on me 2) The delicious lunch I had 3) Finishing my project ahead of schedule.</div>
+            </div>
+            <div class="journal-entry">
+                <div class="journal-date">Monday, June 5</div>
+                <div class="journal-text">Noticed a pattern of negative self-talk when I make small mistakes. Going to work on being kinder to myself this week.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resources Panel -->
+    <div class="content-panel" id="resourcesPanel">
+        <div class="panel-header">
+            <div class="panel-title">Resources</div>
+            <div class="panel-close" data-panel="resourcesPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <p>Educational materials and tools to support your mental health journey.</p>
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="resource-info">
+                    <div class="resource-title">Understanding Anxiety</div>
+                    <div class="resource-type">Article • 8 min read</div>
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="resource-info">
+                    <div class="resource-title">Mindfulness for Beginners</div>
+                    <div class="resource-type">Video • 12 min</div>
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-headphones"></i>
+                </div>
+                <div class="resource-info">
+                    <div class="resource-title">Sleep Meditation</div>
+                    <div class="resource-type">Audio • 20 min</div>
+                </div>
+            </div>
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <div class="resource-info">
+                    <div class="resource-title">Crisis Hotlines</div>
+                    <div class="resource-type">External Resource</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Panel -->
+    <div class="content-panel" id="communityPanel">
+        <div class="panel-header">
+            <div class="panel-title">Community</div>
+            <div class="panel-close" data-panel="communityPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="community-post">
+                <div class="post-header">
+                    <img src="https://randomuser.me/api/portraits/women/32.jpg" class="post-avatar" alt="User">
+                    <div class="post-user">Maria Rodriguez</div>
+                    <div class="post-time">2 hours ago</div>
+                </div>
+                <div class="post-content">
+                    Just completed a 30-day meditation challenge! I've noticed I'm much more patient with my kids and able to handle stress better. Highly recommend sticking with it even when it feels hard at first.
+                </div>
+                <div class="post-actions">
+                    <div class="post-action"><i class="far fa-thumbs-up"></i> 12</div>
+                    <div class="post-action"><i class="far fa-comment"></i> 3</div>
+                    <div class="post-action"><i class="fas fa-share"></i> Share</div>
+                </div>
+            </div>
+            <div class="community-post">
+                <div class="post-header">
+                    <img src="https://randomuser.me/api/portraits/men/45.jpg" class="post-avatar" alt="User">
+                    <div class="post-user">James Wilson</div>
+                    <div class="post-time">5 hours ago</div>
+                </div>
+                <div class="post-content">
+                    Does anyone have tips for dealing with anxiety at work? I have a big presentation coming up and the stress is affecting my sleep.
+                </div>
+                <div class="post-actions">
+                    <div class="post-action"><i class="far fa-thumbs-up"></i> 8</div>
+                    <div class="post-action"><i class="far fa-comment"></i> 5</div>
+                    <div class="post-action"><i class="fas fa-share"></i> Share</div>
+                </div>
+            </div>
+            <div class="community-post">
+                <div class="post-header">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" class="post-avatar" alt="User">
+                    <div class="post-user">Sophia Chen</div>
+                    <div class="post-time">1 day ago</div>
+                </div>
+                <div class="post-content">
+                    Sharing a resource that helped me - "The Happiness Trap" by Dr. Russ Harris. Really changed how I think about negative thoughts and emotions.
+                </div>
+                <div class="post-actions">
+                    <div class="post-action"><i class="far fa-thumbs-up"></i> 24</div>
+                    <div class="post-action"><i class="far fa-comment"></i> 7</div>
+                    <div class="post-action"><i class="fas fa-share"></i> Share</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="content-panel" id="settingsPanel">
+        <div class="panel-header">
+            <div class="panel-title">Settings</div>
+            <div class="panel-close" data-panel="settingsPanel">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="settings-group">
+                <div class="settings-group-title">Account Settings</div>
+                <div class="setting-item">
+                    <div class="setting-label">Dark Mode</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">Email Notifications</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">Push Notifications</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-group-title">Privacy</div>
+                <div class="setting-item">
+                    <div class="setting-label">Activity Sharing</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">Anonymous Mode</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <div class="settings-group-title">AI Assistant</div>
+                <div class="setting-item">
+                    <div class="setting-label">Voice Responses</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">Personality</div>
+                    <select style="padding: 8px; border-radius: 5px; border: 1px solid #ddd; width: 100%;">
+                        <option>Professional</option>
+                        <option>Friendly</option>
+                        <option>Compassionate</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                Save Settings
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-title">MindCare Assistant</div>
+                <div class="chatbot-close" id="chatbotClose">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    Hello! I'm your MindCare assistant. How can I help you today?
+                </div>
+                <div class="message bot-message">
+                    You can ask me about mental health, coping strategies, or request resources.
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="chatbotInput" placeholder="Type your message...">
+                <button id="chatbotSend"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <div class="chatbot-toggle" id="chatbotToggle">
+            <i class="fas fa-robot"></i>
+        </div>
+    </div>
+
+    <!-- Emergency Button -->
+    <button class="emergency-btn" id="emergencyBtn">
+        <i class="fas fa-plus-circle"></i> Emergency Help
+    </button>
+</div>
+
+<!-- Journal Entry Modal -->
+<div class="modal" id="journalModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">New Journal Entry</div>
+            <div class="modal-close" id="closeJournalModal">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">How are you feeling today?</label>
+                <select style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <option>😁 Great</option>
+                    <option>😊 Good</option>
+                    <option>😐 Okay</option>
+                    <option>😞 Bad</option>
+                    <option>😭 Awful</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Your Entry</label>
+                <textarea style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; min-height: 150px;" placeholder="Write your thoughts here..."></textarea>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: 500;">Tags (optional)</label>
+                <input type="text" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" placeholder="e.g. anxiety, work, family">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelJournalEntry">Cancel</button>
+            <button class="btn btn-primary">Save Entry</button>
+        </div>
+    </div>
+</div>
+
+<!-- Emergency Help Modal -->
+<div class="modal" id="emergencyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">Emergency Help</div>
+            <div class="modal-close" id="closeEmergencyModal">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 15px;">If you're in crisis, please contact one of these resources immediately:</p>
+
+            <div style="background: #fff5f5; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-weight: 600; margin-bottom: 5px;">National Suicide Prevention Lifeline</div>
+                <div style="margin-bottom: 10px;">Call or text 988 (US)</div>
+                <a href="tel:988" class="btn btn-primary" style="display: inline-block; margin-right: 10px;">
+                    <i class="fas fa-phone"></i> Call Now
+                </a>
+                <a href="https://988lifeline.org/chat/" target="_blank" class="btn btn-secondary" style="display: inline-block;">
+                    <i class="fas fa-comment"></i> Chat Online
+                </a>
+            </div>
+
+            <div style="background: #fff5f5; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="font-weight: 600; margin-bottom: 5px;">Crisis Text Line</div>
+                <div style="margin-bottom: 10px;">Text HOME to 741741 (US)</div>
+                <a href="sms:741741&body=HOME" class="btn btn-primary" style="display: inline-block;">
+                    <i class="fas fa-sms"></i> Text Now
+                </a>
+            </div>
+
+            <div style="background: #f5f9ff; border-radius: 8px; padding: 15px;">
+                <div style="font-weight: 600; margin-bottom: 10px;">Other Resources</div>
+                <div style="margin-bottom: 5px;"><i class="fas fa-globe"></i> <a href="#" style="color: var(--primary);">Find local mental health services</a></div>
+                <div><i class="fas fa-user-md"></i> <a href="#" style="color: var(--primary);">Contact your therapist</a></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelEmergency">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Modal -->
+<div class="modal" id="activityModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title" id="activityModalTitle">Activity</div>
+            <div class="modal-close" id="closeActivityModal">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="modal-body" id="activityModalContent">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" id="cancelActivity">Close</button>
+            <button class="btn btn-primary" id="startActivity">Start Activity</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Panel Management System
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-item a');
+        const panelCloses = document.querySelectorAll('.panel-close');
+        const panels = document.querySelectorAll('.content-panel');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        // Handle navigation link clicks
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const panelId = this.getAttribute('data-panel');
+
+                // Close all panels first
+                panels.forEach(panel => {
+                    panel.classList.remove('active');
+                });
+
+                // Remove active class from all nav items
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Add active class to clicked link's parent
+                this.parentElement.classList.add('active');
+
+                // Show the corresponding panel
+                document.getElementById(panelId).classList.add('active');
+            });
+        });
+
+        // Handle panel close buttons
+        panelCloses.forEach(closeBtn => {
+            closeBtn.addEventListener('click', function() {
+                const panelId = this.getAttribute('data-panel');
+                document.getElementById(panelId).classList.remove('active');
+
+                // Remove active class from corresponding nav item
+                navItems.forEach(item => {
+                    if (item.querySelector(`[data-panel="${panelId}"]`)) {
+                        item.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', function(event) {
+            let isPanel = false;
+            let isNavLink = false;
+
+            // Check if click is inside any panel
+            panels.forEach(panel => {
+                if (panel.contains(event.target)) {
+                    isPanel = true;
+                }
+            });
+
+            // Check if click is on any nav link
+            navLinks.forEach(link => {
+                if (link.contains(event.target)) {
+                    isNavLink = true;
+                }
+            });
+
+            // Close all panels if clicking outside
+            if (!isPanel && !isNavLink) {
+                panels.forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
+            }
+        });
+
+        // Chatbot Toggle
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const chatbotClose = document.getElementById('chatbotClose');
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('active');
+        });
+
+        chatbotClose.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+        });
+
+        // Chatbot Functionality
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+            messageDiv.textContent = message;
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        chatbotSend.addEventListener('click', () => {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                chatbotInput.value = '';
+
+                // Simulate AI response
+                setTimeout(() => {
+                    const responses = [
+                        "I understand how you're feeling. Have you tried any relaxation techniques?",
+                        "That's an important concern. Let me find some resources for you.",
+                        "Many people experience similar feelings. You're not alone in this.",
+                        "I recommend trying a short mindfulness exercise to help with that.",
+                        "Have you considered journaling about these feelings? It can often help provide clarity."
+                    ];
+                    addMessage(responses[Math.floor(Math.random() * responses.length)]);
+                }, 1000);
+            }
+        });
+
+        chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                chatbotSend.click();
+            }
+        });
+
+        // Mood Selection
+        const moodOptions = document.querySelectorAll('.mood-option');
+        moodOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                moodOptions.forEach(opt => opt.style.backgroundColor = 'transparent');
+                option.style.backgroundColor = 'rgba(108, 99, 255, 0.1)';
+
+                // In a real app, you would send this to your backend
+                const mood = option.getAttribute('data-mood');
+                console.log('Selected mood:', mood);
+
+                // Show confirmation
+                alert(`You selected "${option.querySelector('.mood-name').textContent}" mood. This has been recorded.`);
+            });
+        });
+
+        // Journal Modal
+        const journalModal = document.getElementById('journalModal');
+        const newJournalEntry = document.getElementById('newJournalEntry');
+        const closeJournalModal = document.getElementById('closeJournalModal');
+        const cancelJournalEntry = document.getElementById('cancelJournalEntry');
+
+        newJournalEntry.addEventListener('click', () => {
+            journalModal.classList.add('active');
+        });
+
+        closeJournalModal.addEventListener('click', () => {
+            journalModal.classList.remove('active');
+        });
+
+        cancelJournalEntry.addEventListener('click', () => {
+            journalModal.classList.remove('active');
+        });
+
+        // Emergency Modal
+        const emergencyModal = document.getElementById('emergencyModal');
+        const emergencyBtn = document.getElementById('emergencyBtn');
+        const closeEmergencyModal = document.getElementById('closeEmergencyModal');
+        const cancelEmergency = document.getElementById('cancelEmergency');
+
+        emergencyBtn.addEventListener('click', () => {
+            emergencyModal.classList.add('active');
+        });
+
+        closeEmergencyModal.addEventListener('click', () => {
+            emergencyModal.classList.remove('active');
+        });
+
+        cancelEmergency.addEventListener('click', () => {
+            emergencyModal.classList.remove('active');
+        });
+
+        // Activity Modal
+        const activityModal = document.getElementById('activityModal');
+        const activityCards = document.querySelectorAll('.activity-card');
+        const closeActivityModal = document.getElementById('closeActivityModal');
+        const cancelActivity = document.getElementById('cancelActivity');
+        const activityModalTitle = document.getElementById('activityModalTitle');
+        const activityModalContent = document.getElementById('activityModalContent');
+
+        // Activity data
+        const activities = {
+            'breathing': {
+                title: 'Breathing Exercise',
+                content: `
+                        <h3 style="margin-bottom: 15px;">4-7-8 Breathing Technique</h3>
+                        <p style="margin-bottom: 15px;">This exercise helps reduce anxiety and promote relaxation:</p>
+                        <ol style="margin-bottom: 20px; padding-left: 20px;">
+                            <li style="margin-bottom: 10px;">Breathe in quietly through your nose for 4 seconds</li>
+                            <li style="margin-bottom: 10px;">Hold your breath for 7 seconds</li>
+                            <li style="margin-bottom: 10px;">Exhale completely through your mouth for 8 seconds</li>
+                        </ol>
+                        <p>Repeat this cycle 4 times. Focus on making your exhale longer than your inhale.</p>
+                    `
+            },
+            'mindfulness': {
+                title: 'Mindfulness Meditation',
+                content: `
+                        <h3 style="margin-bottom: 15px;">10-Minute Mindfulness Practice</h3>
+                        <p style="margin-bottom: 15px;">Find a comfortable seated position and follow these steps:</p>
+                        <ol style="margin-bottom: 20px; padding-left: 20px;">
+                            <li style="margin-bottom: 10px;">Close your eyes and take a few deep breaths</li>
+                            <li style="margin-bottom: 10px;">Bring your attention to your breath</li>
+                            <li style="margin-bottom: 10px;">When your mind wanders, gently return focus to your breath</li>
+                            <li style="margin-bottom: 10px;">Expand your awareness to sounds, then body sensations</li>
+                            <li style="margin-bottom: 10px;">End by gently opening your eyes</li>
+                        </ol>
+                        <p>Remember, it's normal for your mind to wander. The practice is in returning your focus.</p>
+                    `
+            },
+            'journal': {
+                title: 'Journal Prompt',
+                content: `
+                        <h3 style="margin-bottom: 15px;">Daily Reflection</h3>
+                        <p style="margin-bottom: 15px;">Use these prompts to guide your journaling:</p>
+                        <ul style="margin-bottom: 20px; padding-left: 20px;">
+                            <li style="margin-bottom: 10px;">What emotions did I experience today?</li>
+                            <li style="margin-bottom: 10px;">What was challenging today, and how did I handle it?</li>
+                            <li style="margin-bottom: 10px;">What am I proud of accomplishing today?</li>
+                            <li style="margin-bottom: 10px;">What can I do tomorrow to support my wellbeing?</li>
+                        </ul>
+                        <p>There are no right or wrong answers - just observe and reflect without judgment.</p>
+                    `
+            },
+            'gratitude': {
+                title: 'Gratitude List',
+                content: `
+                        <h3 style="margin-bottom: 15px;">Gratitude Practice</h3>
+                        <p style="margin-bottom: 15px;">List 3-5 things you're grateful for today. They can be big or small:</p>
+                        <div style="margin-bottom: 20px;">
+                            <textarea style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; min-height: 150px;" placeholder="1. \n2. \n3. \n4. \n5."></textarea>
+                        </div>
+                        <p>Research shows that regular gratitude practice can increase happiness and life satisfaction.</p>
+                    `
+            }
+        };
+
+        activityCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const activityId = card.getAttribute('data-activity');
+                const activity = activities[activityId];
+
+                activityModalTitle.textContent = activity.title;
+                activityModalContent.innerHTML = activity.content;
+                activityModal.classList.add('active');
+            });
+        });
+
+        closeActivityModal.addEventListener('click', () => {
+            activityModal.classList.remove('active');
+        });
+
+        cancelActivity.addEventListener('click', () => {
+            activityModal.classList.remove('active');
+        });
+
+        // Start Activity button
+        document.getElementById('startActivity').addEventListener('click', function() {
+            const activityTitle = activityModalTitle.textContent;
+            alert(`Starting "${activityTitle}" activity. This would launch the full experience in a real app.`);
+            activityModal.classList.remove('active');
+        });
+
+        // View Mood History
+        document.getElementById('viewMoodHistory').addEventListener('click', function() {
+            document.querySelector('[data-panel="progressPanel"]').click();
+        });
+
+        // View All Activities
+        document.getElementById('viewAllActivities').addEventListener('click', function() {
+            document.querySelector('[data-panel="activitiesPanel"]').click();
+        });
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode');
+            // In a real app, you would save this preference
+            console.log('Dark mode:', this.checked);
+        });
+    });
+</script>
+</body>
+</html>

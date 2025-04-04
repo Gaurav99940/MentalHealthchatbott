@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | MindCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --danger: #dc3545;
+            --success: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: var(--dark);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-header h2 {
+            color: var(--primary);
+        }
+
+        .register-header p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 15px;
+            color: #999;
+        }
+
+        .input-icon input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-icon input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #5a52e0;
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--dark);
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .terms input {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .terms label {
+            font-size: 0.9rem;
+        }
+
+        .terms a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        @media (max-width: 576px) {
+            .register-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <div class="logo">
+        <i class="fas fa-brain"></i>
+        <h1>MindCare</h1>
+    </div>
+
+    <div class="register-header">
+        <h2>Create Your Account</h2>
+        <p>Start your mental health journey today</p>
+    </div>
+
+    <form id="registerForm">
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <div class="input-icon">
+                <i class="fas fa-user"></i>
+                <input type="text" id="fullname" placeholder="XYZ" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Moblile</label>
+            <div class="input-icon">
+                <input type="number" id="number" placeholder="Mobile" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <div class="input-icon">
+                <i class="fas fa-calendar"></i>
+                <input type="date" id="dob" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Gender</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" id="male" name="gender" value="male" required>
+                    <label for="male">Male</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">Female</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="other" name="gender" value="other">
+                    <label for="other">Other</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="city">City</label>
+                <select id="city" class="form-control" required>
+                    <option value="" disabled selected>Select your city</option>
+                    <option value="new-york">New Delhi</option>
+                    <option value="los-angeles">Noida</option>
+                    <option value="chicago">Ghaziabad</option>
+                    <option value="houston">Meerut</option>
+                    <option value="phoenix">Faridabad</option>
+                    <option value="other">Gurugram</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-icon">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="your@email.com" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-icon">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="••••••••" required>
+                <i class="fas fa-eye toggle-password" onclick="togglePassword('password')"></i>
+            </div>
+            <div id="passwordError" class="error-message"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="input-icon">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="confirmPassword" placeholder="••••••••" required>
+                <i class="fas fa-eye toggle-password" onclick="togglePassword('confirmPassword')"></i>
+            </div>
+            <div id="confirmError" class="error-message"></div>
+        </div>
+
+        <div class="terms">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+
+        <button type="submit" class="btn">Create Account</button>
+    </form>
+
+    <div class="login-link">
+        <p>Already have an account? <a href="login.html">Sign In</a></p>
+    </div>
+</div>
+
+<script>
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = field.nextElementSibling;
+
+        if (field.type === "password") {
+            field.type = "text";
+            icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            field.type = "password";
+            icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
+
+    // Form validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const fullname = document.getElementById('fullname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const termsChecked = document.getElementById('terms').checked;
+
+        const passwordError = document.getElementById('passwordError');
+        const confirmError = document.getElementById('confirmError');
+
+        // Reset errors
+        passwordError.style.display = 'none';
+        confirmError.style.display = 'none';
+
+        let isValid = true;
+
+        // Password validation
+        if (password.length < 8) {
+            passwordError.textContent = "Password must be at least 8 characters";
+            passwordError.style.display = 'block';
+            isValid = false;
+        }
+
+        // Password match validation
+        if (password !== confirmPassword) {
+            confirmError.textContent = "Passwords do not match";
+            confirmError.style.display = 'block';
+            isValid = false;
+        }
+
+        // Terms validation
+        if (!termsChecked) {
+            alert("You must agree to the terms and conditions");
+            isValid = false;
+        }
+
+        if (isValid) {
+            // Here you would typically send data to your backend
+            console.log("Registration data:", { fullname, email, password });
+            alert("Account created successfully! Redirecting to login...");
+            // window.location.href = "login.html";
+        }
+    });
+
+    // Real-time password validation
+    document.getElementById('password').addEventListener('input', function() {
+        const password = this.value;
+        const errorElement = document.getElementById('passwordError');
+
+        if (password.length > 0 && password.length < 8) {
+            errorElement.textContent = "Password must be at least 8 characters";
+            errorElement.style.display = 'block';
+        } else {
+            errorElement.style.display = 'none';
+        }
+    });
+
+    // Real-time password match check
+    document.getElementById('confirmPassword').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        const errorElement = document.getElementById('confirmError');
+
+        if (confirmPassword !== password && confirmPassword.length > 0) {
+            errorElement.textContent = "Passwords do not match";
+            errorElement.style.display = 'block';
+        } else {
+            errorElement.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
