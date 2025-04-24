@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare - Mental Health Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <l
+</head>
+<body>
+<script>document.addEventListener('DOMContentLoaded', function() {
+    // Get buttons
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const signupBtn = document.getElementById('signupBtn');
+
+    // Add click event listeners
+    loginBtn.addEventListener('click', function () {
+        window.location.href = 'login.html';
+    });
+
+    registerBtn.addEventListener('click', function () {
+        window.location.href = 'register.html';
+
+    });
+    signupBtn.addEventListener('click', function () {
+        window.location.href = 'signup.html';
+    });
+
+    // Animation for buttons on hover
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 10px 20px rgba(108, 99, 255, 0.2)';
+        });
+
+        button.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+        button.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+});
+</script>
+<div class="container">
+    <header>
+        <h1>MindCare</h1>
+        <p>Your personal mental health companion</p>
+    </header>
+
+    <main>
+        <div class="hero">
+            <div class="hero-text">
+                <h2>Feel Better, Start Talking</h2>
+                <p>Track your mood, chat with our AI assistant, and discover resources to improve your mental wellbeing.</p>
+            </div>
+            <div class="hero-image">
+                <img src="https://illustrations.popsy.co/amber/digital-nomad.svg" alt="Mental health illustration">
+            </div>
+        </div>
+
+        <div class="auth-buttons">
+            <button id="loginBtn" class="btn ">Login</button>
+            <button id="signupBtn" class="btn ">SignUp</button>
+            <button id="registerBtn" class="btn secondary">Register</button>
+        </div>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
